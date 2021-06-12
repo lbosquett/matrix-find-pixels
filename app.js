@@ -76,6 +76,7 @@ const app = new Vue({
             this.data = this.data.slice();
         },
         fillRandom: function(chance) {
+            this.reads = 0;
             for (let x = 0; x < this.data.length; x++) {
                 for (let y = 0; y < this.data[x].length; y++) {
                     let pixel = Math.random() > (1 - chance) ? 1 : 0;
@@ -86,6 +87,7 @@ const app = new Vue({
             this.resetMask();
         },
         checkerboardFill: function() {
+            this.reads = 0;
             for (let x = 0; x < this.data.length; x++) {
                 for (let y = 0; y < this.data[x].length; y++) {
                     let pixel = x % 2 == 0 ? 1 - y % 2 : y % 2;
