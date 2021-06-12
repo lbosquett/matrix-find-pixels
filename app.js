@@ -16,6 +16,11 @@ const app = new Vue({
         resetMask: function() {
             this.mask = new Array(size).fill([]).map(x => new Array(size).fill(0));
         },
+        switchPixelToWhite: function(x, y) {
+            // I'm not using read function here because is a write to memory
+            this.data[x][y] = 0;
+            this.mask[x][y] = 1;
+        },
         run: function() {
             this.reads = 0;
             this.resetMask();
@@ -38,6 +43,16 @@ const app = new Vue({
                         case states.READ_WHITE:
                             if (pixel === 1) {
                                 state = states.READ_BLACK;
+
+                                if (y + 1 == this.data[x].length) {
+                                    // here we found [ 0 1 ] and is on right side
+                                    const upper = x > 0 ? this.read(x - 1, y) : 0;
+                                    const bottom = (x + 1) < this.data.length ? this.read(x + 1, y) : 0;
+                                    if (upper == 0 && bottom == 0) {
+                                        this.switchPixelToWhite(x, y);
+                                    }
+                                    // state will be set to INITIAL at start of next line
+                                }
                                 continue;
                             }
                             // remains in this state
@@ -48,10 +63,7 @@ const app = new Vue({
                                 const upper = x > 0 && y > 0 ? this.read(x - 1, y - 1) : 0;
                                 const bottom = (x + 1) < this.data.length && y > 0 ? this.read(x + 1, y - 1) : 0;
                                 if (upper == 0 && bottom == 0) {
-                                    // replace pixel to 0
-                                    // I'm not using read function here because is a write to memory
-                                    this.data[x][y - 1] = 0;
-                                    this.mask[x][y - 1] = 1;
+                                    this.switchPixelToWhite(x, y - 1);
                                 }
                                 state = states.READ_WHITE;
                                 continue;
