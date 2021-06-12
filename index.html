@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+<div id="app">
+    <button v-on:click="fillRandom(0.2)">
+        fill random
+    </button>
+    <button v-on:click="checkerboardFill()">
+        checkerboard fill
+    </button>
+    <button v-on:click="run">
+        Run
+    </button>
+    <div class="reads">Total reads: {{reads}}</div>
+    <div class="output">
+        <div class="output__row"
+             v-for="(line, rowIndex) in data"
+             :key="rowIndex">
+            <div v-for="(item, columnIndex) in line" :key="columnIndex">
+              <span class="output__item marked-item" v-if="mask[rowIndex][columnIndex] === 1">
+                {{item}}
+              </span>
+              <span v-else :class="{ 'output__item': true, 'output__item-black': item === 1 }">
+                {{item}}
+              </span>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
